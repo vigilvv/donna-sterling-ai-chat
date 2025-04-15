@@ -19,6 +19,12 @@ interface Message {
     name: string;
   }[];
 }
+function downloadBase64Pdf(base64: string, filename: string) {
+  const link = document.createElement("a");
+  link.href = `data:application/pdf;base64,${base64}`;
+  link.download = filename;
+  link.click();
+}
 
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -78,15 +84,31 @@ const Chat: React.FC = () => {
     const getEstimate = async () => {
       try {
         const result = await fetchPriceEstimate(inputValue);
+
         // setData(result);
         const aiResponse: Message = {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          content: result.justification,
+          //   content: `
+          //   UUID: ${result.uuid}
+          //   ${result.justification}`,
+          // };
+          content:
+            result.justification +
+            "\n\n" +
+            `UUID: ${result.uuid}` +
+            "\n\n" +
+            `PDF hash: ${result.pdf_hash}` +
+            "\n\n" +
+            `Transaction hash: ${result.tx_hash}` +
+            "\n\n" +
+            `https://sepolia.basescan.org/tx/0x${result.tx_hash}`,
         };
 
         setMessages((prev) => [...prev, aiResponse]);
         setIsSubmitting(false);
+
+        downloadBase64Pdf(result.pdf_base64, `report_${result.uuid}.pdf`);
       } catch (err) {
         // setError("Failed to fetch estimate.");
         console.error(err);

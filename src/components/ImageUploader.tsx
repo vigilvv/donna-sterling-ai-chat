@@ -1,8 +1,7 @@
-
-import React, { useState, useRef } from 'react';
-import { Image, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import React, { useState, useRef } from "react";
+import { Image, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ImageUploaderProps {
   onImagesSelected: (images: string[]) => void;
@@ -17,15 +16,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesSelected }) => {
     if (files && files.length > 0) {
       const newImages: string[] = [];
       const imagePromises: Promise<string>[] = [];
-      
-      Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
+
+      Array.from(files).forEach((file) => {
+        if (file.type.startsWith("image/")) {
           const promise = convertToBase64(file);
           imagePromises.push(promise);
         }
       });
-      
-      Promise.all(imagePromises).then(results => {
+
+      Promise.all(imagePromises).then((results) => {
         const combinedImages = [...previewImages, ...results];
         setPreviewImages(combinedImages);
         onImagesSelected(combinedImages);
@@ -38,7 +37,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesSelected }) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   };
 
@@ -56,16 +55,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesSelected }) => {
 
   return (
     <div className="w-full">
-      <input 
-        type="file" 
-        accept="image/*" 
-        multiple 
-        onChange={handleFileChange} 
-        className="hidden" 
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleFileChange}
+        className="hidden"
         ref={fileInputRef}
       />
-      
-      <Button 
+
+      {/* <Button 
         type="button" 
         variant="outline" 
         size="sm" 
@@ -77,16 +76,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesSelected }) => {
       >
         <Image size={16} />
         <span>Upload Images</span>
-      </Button>
-      
+      </Button> */}
+
       {previewImages.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
           {previewImages.map((img, index) => (
             <div key={index} className="relative group">
-              <img 
-                src={img} 
-                alt={`Preview ${index}`} 
-                className="w-16 h-16 object-cover rounded border border-gray-200" 
+              <img
+                src={img}
+                alt={`Preview ${index}`}
+                className="w-16 h-16 object-cover rounded border border-gray-200"
               />
               <button
                 type="button"
